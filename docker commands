@@ -1,0 +1,87 @@
+Docker commands
+
+docker run nginx --> to start or run a container using nginx image
+docker ps __> to list containers
+docker ps -a --> to list all containers including which are stopped an exited previously .
+docker stop <container id> or <container name> --> to stop a docker container.
+docker rm  --> remove or delete container.
+docker images --> to list available images
+docker rmi <image name> --> to delete or remove image (also make sure that no container is running based on that image if there is any running stop and delete that container first to delete image)
+docker pull nginx --> to only pull image (not to run a container )
+docker exec <conatiner name> cat /etc/hosts --> to execute a command  on my docker container (lets  say i would like to see contents of a file inside a container)
+docker run -d nginx --> to run docker container in detatached mode or in backend
+docker attach <conatiner id > --> to attach the container back .(you can just specify first 4 letters of container id)
+docke run -it ubuntu bash --> -i (interactive): This flag allows you to interact with the container by keeping the standard input (stdin) open. It’s essential for commands that expect user input.
+-t (tty): This flag allocates a pseudo-terminal (TTY) for the container, which is useful for running commands interactively, as it gives you a command prompt inside the container.
+Combined -it: When combined, these options allow you to run commands inside the container interactively with access to a terminal, similar to how you would interact with a normal Linux shell
+docker stop $(docker ps -aq) --> to stop all conatiners at once .
+The -a flag lists all containers (both running and stopped).
+The -q flag returns only the container IDs (quiet mode), without other details.
+docker rm $(docker ps -aq) --> to remove all containers at once
+docker rmi $(docker images -aq) --> to remove or delete all images 
+docker run redis:5.0 --> if you want a particular version of you specify the version as tag .(if you donot specify any tag it will create latest version)
+docker run -p 80:5000 nginx --> to port map docker host to 80 to docker container 5000 (user can acess your application on docker host port 80)
+
+the docker container has its own isolated system and any changes to any files happen within container.(/var/lib).
+i have a database container if it is deleted all the data inside the conatiner gets blown away .to persist this data we map a directory outside the container on docker host to directory inside the conatainer.
+docker run -v /opt/datadir:/var/lib/mysql mysql --> to map a directory /opt/datadir from docker host to directory /var/lib/mysql on container (it will implicitly mount external 
+directory to a folder inside the docker container)
+docker inspect <container id> or <container name> --> you can see basic details using docker ps but if you want to get additional details of a container you can use this 
+command.(it will return details in json format)
+docker logs <conatainer id or name> --> to check logs of cantainer that we run on back groun using -d 
+
+docker run -p 38282:8080 -e APP_COLOR=blue --name blue-app kodekloud/simple-webapp --> Run a container named blue-app using image kodekloud/simple-webapp and set the environment 
+variable APP_COLOR to blue. Make the application available on port 38282 on the host. The application listens on port 8080
+
+Note : if you want to push a docker image to docker hub you need to login using docker login it will ask for username and password when you build the image tag it with your 
+docker account name docker build .-t achyut/my-simple-webapp 
+
+Common Docker Compose Commands
+docker-compose up: Starts and runs all services in the docker-compose.yml file.
+docker-compose down: Stops and removes all services and networks created by Docker Compose.
+docker-compose ps: Lists the containers running under the current Compose project.
+docker-compose logs: Shows logs for all services.
+
+docker engine 
+if you want to run a container based on nginx on a remote docker host --> docker -H=10.23.14.28:2375 run nginx 
+here 10.23.14.28 is docker engine address and 2375 is port .
+
+docker volumes:
+docker volume create my-volume --> This command creates a named volume called my-volume that Docker manages
+docker run -d -v my-volume:/data my-container --> In this example, the volume my-volume is mounted to /data inside the container. Any files written to /data inside the container are stored in my-volume on the host.
+docker volume inspect my-volume --> Inspecting a Volume
+You can inspect a volume to get details, including its location on the host
+docker volume rm my-volume -->  Removing a Volume
+Volumes can be removed with the docker volume rm command, but they must not be in use by any container
+docker volume prune --> To remove all unused volumes (volumes not associated with any container), you can use
+
+docker network:
+To create and connect to a custom bridge network:
+docker network create my-bridge-network
+docker run -d --network my-bridge-network --name app-container my-app
+To create and connect to a custom host network:
+docker run --network host my-app 
+To create and connect to a custom overlay network:
+docker network create -d overlay my-overlay-network
+docker service create --name my-service --network my-overlay-network my-app
+Note: Overlay networks require Docker Swarm or Kubernetes to be enabled.
+To create and connect to a custom macvalen network:
+docker network create -d macvlan \
+  --subnet=192.168.1.0/24 \
+  --gateway=192.168.1.1 \
+  -o parent=eth0 my-macvlan-network
+docker run -d --network my-macvlan-network --name my-container my-app
+Note: Macvlan requires specific network setup and permissions on the host.
+docker run --network none my-app
+
+docker network ls
+Inspect a Network (to see connected containers, settings, etc.):
+docker network inspect my-bridge-network
+Disconnect a Container from a Network:
+docker network disconnect my-bridge-network my-container
+Remove a Network (only works if no containers are connected):
+docker network rm my-bridge-network
+
+docker registry:
+docker run -d -p 5000:5000 --name my-registry registry:2 --> This creates a registry running on port 5000, which can then be accessed for pushing and pulling images.
+docker pull nginx:latest then docker image tag nginx:latest localhost:5000/nginx:latest and finally push it using docker push localhost:5000/nginx:latest.--> to push some images to our registry server
