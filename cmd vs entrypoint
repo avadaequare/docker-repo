@@ -1,0 +1,48 @@
+CMD vs Entrypoint
+In Docker, both CMD and ENTRYPOINT are used to define the default command that runs when a container starts, but they serve slightly different purposes and have distinct 
+behaviors. Here’s a breakdown of the differences between CMD and ENTRYPOINT:
+
+1. Purpose:
+CMD: Defines the default command and/or arguments that should be executed when running a container. However, it can be overridden by arguments passed to docker run.
+ENTRYPOINT: Sets the main command that will always run when the container starts. It is often used to ensure that specific commands are run every time, regardless of any 
+additional parameters passed at runtime.
+2. Usage:
+CMD: Primarily used to set default arguments or commands that can be easily overridden. You might use it for commands that don’t need strict enforcement.
+Dockerfile
+Copy code
+CMD ["python", "app.py"]
+ENTRYPOINT: Used to make the container act like a specific executable. It’s more restrictive and is often combined with CMD to provide default arguments to the executable.
+Dockerfile
+Copy code
+ENTRYPOINT ["python"]
+CMD ["app.py"]
+Here, ENTRYPOINT makes sure python is always the base command, while CMD provides a default argument (app.py), which can be overridden.
+3. Override Behavior:
+With CMD Only: You can replace the command by passing a new one when running the container. For example:
+
+docker run my_image echo "Hello, world!"
+This overrides CMD entirely.
+
+With ENTRYPOINT Only: Any arguments you pass to docker run will be appended to the ENTRYPOINT. For example:
+
+Dockerfile
+ENTRYPOINT ["ping"]
+
+docker run my_image google.com
+This runs ping google.com inside the container.
+
+Using Both Together: ENTRYPOINT specifies the executable, and CMD provides default arguments, which can be overridden.
+
+Dockerfile
+
+ENTRYPOINT ["ping"]
+CMD ["localhost"]
+Running docker run my_image will default to ping localhost.
+Running docker run my_image google.com will override CMD, resulting in ping google.com.
+4. Best Practices:
+Use ENTRYPOINT when you want to ensure a particular executable always runs, like when setting up a container to behave like a standalone command (e.g., an application or service).
+Use CMD for setting default arguments that are not strictly enforced and can be overridden more easily.
+In summary:
+
+ENTRYPOINT defines the base executable, making it ideal for creating containers that act as commands.
+CMD provides default arguments or a command, allowing flexibility to override them when running the container.
