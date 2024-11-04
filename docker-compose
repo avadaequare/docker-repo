@@ -1,0 +1,55 @@
+Docker Compose is a tool that simplifies the process of managing and deploying multi-container Docker applications. With Docker Compose, you can define, configure, and start
+multiple Docker containers simultaneously using a single YAML configuration file (typically named docker-compose.yml). This makes it especially useful for applications that 
+require multiple services (e.g., a web server, database, cache) to work together.
+
+Key Features of Docker Compose
+Configuration in a Single File: Define all services, networks, and volumes in a docker-compose.yml file.
+Declarative Setup: Specify how containers should be built, their dependencies, environment variables, volumes, and network configurations in a human-readable way.
+Simplified Multi-Container Management: Run, stop, and manage complex applications with just one or two commands (docker-compose up and docker-compose down).
+Networking: Docker Compose automatically sets up a network for the services to communicate with each other.
+Scalability: You can define and scale services by specifying the number of container instances you want to run for each service.
+Example of a docker-compose.yml File
+Here’s a basic example of a docker-compose.yml file for an application with a web server and a database:
+
+yaml
+version: '3'
+services:
+  web:
+    image: nginx
+    ports:
+      - "80:80"
+    depends_on:
+      - db
+
+  db:
+    image: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: example_password
+In this example:
+
+version: '3' specifies the version of the Compose file format.
+web and db are services:
+The web service uses the Nginx image and maps port 80 on the container to port 80 on the host machine.
+The db service uses a MySQL image and sets an environment variable for the MySQL root password.
+The depends_on option makes sure the db service starts before the web service.
+Common Docker Compose Commands
+docker-compose up: Starts and runs all services in the docker-compose.yml file.
+docker-compose down: Stops and removes all services and networks created by Docker Compose.
+docker-compose ps: Lists the containers running under the current Compose project.
+docker-compose logs: Shows logs for all services.
+Benefits of Using Docker Compose
+Simplifies development: Run multiple containers with one command.
+Consistency: Set up development environments that are consistent across different developers or machines.
+Easier orchestration: Define complex applications in a single file, making deployment and scaling simpler.
+Docker Compose is ideal for local development, testing, and small to medium-sized projects where you need an easy way to handle multi-container environments.
+
+docker-compose up --> to run a docker-compose.yaml file 
+
+reference links:
+
+https://docs.docker.com/compose/
+
+
+https://docs.docker.com/engine/reference/commandline/compose/
+
+https://github.com/dockersamples/example-voting-app
