@@ -1,0 +1,31 @@
+docker registry:
+Now its time to push some images to our registry server. Let's push two images for now .i.e. nginx:latest and httpd:latest
+
+ docker pull nginx:latest then docker image tag nginx:latest localhost:5000/nginx:latest and finally push it using docker push localhost:5000/nginx:latest.
+We will use the same steps for the second image docker pull httpd:latest and then docker image tag httpd:latest localhost:5000/httpd:latest and finally push it using docker push localhost:5000/httpd:latest
+
+remove all the dangling images we have locally. Use docker image prune -a to remove them
+
+we can pull images from our registry-server as well. Use docker pull [server-addr/image-name] to pull the images that we pushed earlier.
+
+In our case we can use: docker pull localhost:5000/nginx
+
+A Docker registry is a centralized repository where Docker images are stored, managed, and distributed. It acts as a versioned storage space, allowing developers to push and pull Docker images. Docker registries are commonly used in continuous integration and deployment pipelines to ensure consistency across development, testing, and production environments. Here’s an overview:
+
+Key Features of a Docker Registry
+Image Storage and Retrieval: Registries store images, which can be tagged and versioned, making it easy to access specific versions.
+Image Distribution: Enables sharing of images across teams or deployment environments by pulling images from a remote repository.
+Versioning and Tagging: Allows multiple versions of an image to be stored and tagged for easy version control.
+Types of Docker Registries
+Docker Hub: The default public registry provided by Docker, where you can find official and community-contributed images.
+Private Registries: Organizations often use private registries (like AWS ECR, Azure ACR, or self-hosted registries) to store proprietary images securely.
+Basic Workflow
+Build: Create a Docker image using a Dockerfile.
+Tag: Tag the image with a unique name and version, such as my-app:v1.0.
+Push: Push the image to the registry (docker push command).
+Pull: Retrieve the image from the registry on other servers or environments (docker pull command).
+Running a Private Docker Registry
+For organizations looking for a private registry, Docker also allows hosting a registry locally, which provides full control over image access and storage. The Docker registry can be deployed as a Docker container itself:
+
+docker run -d -p 5000:5000 --name my-registry registry:2
+This creates a registry running on port 5000, which can then be accessed for pushing and pulling images.
